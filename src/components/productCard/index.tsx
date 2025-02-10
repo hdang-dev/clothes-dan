@@ -4,7 +4,7 @@ import { Card, Inset, Flex, Text, AspectRatio, Box } from "@radix-ui/themes";
 import Image from "next/image";
 import React from "react";
 
-export function ProductCard({ product }: { product: IProduct }) {
+export function ProductCard({ product }: { product: IProduct; }) {
   return (
     <Card>
       <Inset clip="padding-box" side="top">
@@ -19,21 +19,14 @@ export function ProductCard({ product }: { product: IProduct }) {
           />
         </AspectRatio>
       </Inset>
-      <Flex direction="column" align="center" gap="2">
-        <Text size="4" style={{ fontFamily: "Sansita Swashed, cursive" }}>
+      <Flex direction="column" align="center" gap="1">
+        <Text style={{ fontFamily: "Sansita Swashed, cursive" }}>
           {product.name}
         </Text>
         <Text>{formatPrice(product.price)}</Text>
         <Flex gap="3">
-          {product.tones.map((tone, index) => (
-            <RoundedBox key={index} backgroundColor={colorTone(tone)} />
-          ))}
-        </Flex>
-        <Flex gap="3">
           {product.sizes.map((size, index) => (
-            <Text key={index} size="5">
-              {size}
-            </Text>
+            <Text key={index}>{size}</Text>
           ))}
         </Flex>
       </Flex>
@@ -41,7 +34,7 @@ export function ProductCard({ product }: { product: IProduct }) {
   );
 }
 
-function RoundedBox({ backgroundColor, children }: { backgroundColor?: string; children?: React.ReactNode }) {
+function RoundedBox({ backgroundColor, children }: { backgroundColor?: string; children?: React.ReactNode; }) {
   return (
     <Box width="30px" height="30px" style={{ backgroundColor: backgroundColor, borderRadius: "100%", boxShadow: "var(--shadow-3)", display: "grid", placeItems: "center" }}>
       {children}

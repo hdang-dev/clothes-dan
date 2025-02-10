@@ -1,5 +1,3 @@
-import { EProductTone } from "./interfaces";
-
 export const formatPrice = (value: number): string => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -8,19 +6,10 @@ export const formatPrice = (value: number): string => {
   return formatter.format(value);
 };
 
-export const colorTone = (tone: EProductTone): string => {
-  switch (tone) {
-    case EProductTone.WHITE:
-      return "white";
-    case EProductTone.BLACK:
-      return "black";
-    case EProductTone.GRAY:
-      return "gray";
-    case EProductTone.WARM:
-      return "red";
-    case EProductTone.COOL:
-      return "blue";
-    default:
-      return "black";
-  }
+export const fakeRequest = <T>(response: T): Promise<T> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(response);
+    }, 1000);
+  });
 };

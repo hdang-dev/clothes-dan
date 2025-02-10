@@ -1,3 +1,3 @@
-export * from "./filter";
+export * from "./filters";
 export * from "./productCard";
 export * from "./productList";

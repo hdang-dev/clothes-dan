@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import QueryProvider from "@/providers/queryProvider";
+import { Flex, Grid, Theme } from "@radix-ui/themes";
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
-import { Flex, Theme } from "@radix-ui/themes";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Clothes Dan",
@@ -30,15 +20,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body>
         <Theme>
-          <Flex justify="center">
-            <Flex direction="column" align="center" width="100%" maxWidth="1200px" px="5">
-              {header}
-              {children}
-              {footer}
+          <QueryProvider>
+            <Flex justify="center">
+              <Flex direction="column" align="center" width="100%" maxWidth="1200px" minHeight="100vh" px="5">
+                {header}
+                <Flex flexGrow="1" width="100%" justify="center" align="center">
+                  {children}
+                </Flex>
+                {footer}
+              </Flex>
             </Flex>
-          </Flex>
+          </QueryProvider>
         </Theme>
       </body>
     </html>

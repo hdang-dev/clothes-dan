@@ -1,9 +1,9 @@
 export enum EProductCategory {
-  HAT,
-  "T-SHIRT",
-  JEANS,
-  GLASSES,
-  SHOES,
+  HAT = 'Hat',
+  SHIRT = 'Shirt',
+  TROUSERS = 'Trousers',
+  GLASSES = 'Glasses',
+  SHOES = 'Shoes',
 }
 
 export enum EProductSize {
@@ -15,11 +15,9 @@ export enum EProductSize {
 }
 
 export enum EProductTone {
-  WHITE,
-  BLACK,
-  GRAY,
-  COOL,
-  WARM,
+  NEUTRAL = 'Neutral',
+  COOL = 'Cool',
+  WARM = 'Warm',
 }
 
 export interface IProduct {
@@ -29,5 +27,5 @@ export interface IProduct {
   category: EProductCategory;
   price: number;
   sizes: EProductSize[];
-  tones: EProductTone[];
+  tone: EProductTone;
 }
