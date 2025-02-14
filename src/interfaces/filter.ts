@@ -1,21 +1,16 @@
-export enum EFilterKey {
-    CATEGORY = 'Category',
-    PRICE = 'Price',
-    SIZE = 'Size',
-    TONE = 'Tone'
+import { EProductCategory, EProductSize, EProductTone } from "./product";
+
+export interface IFilter {
+    categories: EProductCategory[],
+    prices: {
+        min: number,
+        max: number;
+    },
+    sizes: EProductSize[],
+    tones: EProductTone[],
 }
 
-interface ICheckboxGroupFilter {
-    key: EFilterKey;
-    type: "checkbox-group";
-    items: string[];
+export enum ESortType {
+    LOW_TO_HIGH = 'Low to High',
+    HIGH_TO_LOW = 'High to Low'
 }
-
-interface IRangeFilter {
-    key: EFilterKey;
-    type: "range";
-    min: number;
-    max: number;
-}
-
-export type TFilter = ICheckboxGroupFilter | IRangeFilter;

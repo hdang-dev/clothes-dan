@@ -1,6 +1,6 @@
 import { IProduct } from "@/interfaces";
-import { formatPrice, colorTone } from "@/utils";
-import { Card, Inset, Flex, Text, AspectRatio, Box } from "@radix-ui/themes";
+import { formatPrice } from "@/utils";
+import { Card, Inset, Flex, Text, AspectRatio } from "@radix-ui/themes";
 import Image from "next/image";
 import React from "react";
 
@@ -31,13 +31,5 @@ export function ProductCard({ product }: { product: IProduct; }) {
         </Flex>
       </Flex>
     </Card>
-  );
-}
-
-function RoundedBox({ backgroundColor, children }: { backgroundColor?: string; children?: React.ReactNode; }) {
-  return (
-    <Box width="30px" height="30px" style={{ backgroundColor: backgroundColor, borderRadius: "100%", boxShadow: "var(--shadow-3)", display: "grid", placeItems: "center" }}>
-      {children}
-    </Box>
   );
 }

@@ -1,25 +1,24 @@
 import { EProductCategory, EProductSize, EProductTone } from "../interfaces";
-import { EFilterKey, TFilter } from "../interfaces/filter";
 
-export const FILTERS: TFilter[] = [
+export const FILTERS = [
     {
-        key: EFilterKey.CATEGORY,
+        key: 'Category',
         type: "checkbox-group",
         items: Object.values(EProductCategory),
     },
     {
-        key: EFilterKey.PRICE,
+        key: 'Price',
         type: "range",
         min: 0,
-        max: 100
+        max: 150
     },
     {
-        key: EFilterKey.SIZE,
+        key: 'Size',
         type: "checkbox-group",
         items: Object.values(EProductSize),
     },
     {
-        key: EFilterKey.TONE,
+        key: 'Tone',
         type: "checkbox-group",
         items: Object.values(EProductTone),
     },
