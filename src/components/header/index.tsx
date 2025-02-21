@@ -1,9 +1,11 @@
+'use client';
+
 import { AvatarIcon, HeartIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Box, Text, Flex, IconButton, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export function Header({ initialSearchText, onClickLogo, onSearch, reset }: { initialSearchText: string, onClickLogo: () => void; onSearch: (text: string) => void; reset: number; }) {
+export function Header({ initialSearchText, onClickLogo, onSearch, reset }: { initialSearchText: string, onClickLogo?: () => void; onSearch: (text: string) => void; reset?: number; }) {
   const [searchText, setSearchText] = useState(initialSearchText);
 
   const changeValue = (value: string) => {
@@ -18,7 +20,7 @@ export function Header({ initialSearchText, onClickLogo, onSearch, reset }: { in
   return (
     <Flex width="100%" justify="between" py="6">
       {/* Logo */}
-      <Link href="/" onClick={() => onClickLogo()}>
+      <Link href="/" onClick={() => onClickLogo?.()}>
         <Text size="7" style={{ fontFamily: "Sansita Swashed, cursive" }}>
           Clothes Dan
         </Text>

@@ -1,4 +1,13 @@
+import { Footer, Header } from "@/components";
+
 export default async function ProductPage({ params }: { params: Promise<{ productId: string; }>; }) {
     const productId = (await params).productId;
-    return <div>abc {productId}</div>;
+    // const searchParams = useSearchParams();
+    return (
+        <>
+            {/* <Header initialSearchText="" onSearch={() => { }} /> */}
+            <div>abc</div>
+            <Footer />
+        </>
+    );
 }

@@ -49,7 +49,7 @@ export default function Home() {
   }, [queryClient, searchParams]);
 
   return (
-    <Fragment>
+    <>
       <Header initialSearchText={searchParams.get('search') || ''} onClickLogo={() => setReset(reset + 1)} onSearch={(text) => debounceChangeSearchText(text)} reset={reset} />
       <Flex flexGrow="1" width="100%" justify="center" align="center">
         <Flex width="100%" height="100%" pt="30px" gap="8">
@@ -75,6 +75,6 @@ export default function Home() {
         </Flex>
       </Flex>
       <Footer />
-    </Fragment>
+    </>
   );
 }

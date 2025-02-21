@@ -1,3 +1,5 @@
+'use client';
+
 import { Flex, Grid, Select, Text } from "@radix-ui/themes";
 import { ProductCard } from "../productCard";
 import { ESortType, IProduct } from "@/interfaces";
