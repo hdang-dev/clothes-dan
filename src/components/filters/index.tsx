@@ -1,64 +1,54 @@
 "use client";
 
 import { Flex, CheckboxGroup, Slider, Text } from "@radix-ui/themes";
-import { EProductCategory, EProductSize, EProductTone } from "@/interfaces";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { debounce } from "lodash";
+import { EProductCategory, EProductSize, EProductTone, IFilters } from "@/interfaces";
 import { formatPrice } from "@/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const MIN_PRICE = 0;
-const MAX_PRICE = 150;
+export function Filters({ initialData, priceRange, onChange, reset }: { initialData: IFilters, priceRange: { min: number, max: number; }, onChange: (value: IFilters) => void; reset: number; }) {
+  const [data, setData] = useState<IFilters>(initialData);
+  const { categories, minPrice, maxPrice, sizes, tones } = data;
 
-export function Filters() {
-  const searchParams = useSearchParams();
-  const pathName = usePathname();
-  const router = useRouter();
-  const categories = searchParams.get('categories')?.split(',').filter(item => item !== '') || [];
-  const minPrice = Number(searchParams.get('minPrice')) || MIN_PRICE;
-  const maxPrice = Number(searchParams.get('maxPrice')) || MAX_PRICE;
-  const sizes = searchParams.get('sizes')?.split(',').filter(item => item !== '') || [];
-  const tones = searchParams.get('tones')?.split(',').filter(item => item !== '') || [];
-
-  if (minPrice > maxPrice || minPrice < MIN_PRICE || maxPrice > MAX_PRICE) {
-    router.push('/');
-    return;
-  }
-
-  const changeFilter = (key: string, values: number[] | string[]) => {
-    const params = new URLSearchParams(searchParams);
-    if (key === 'price') {
-      params.set('minPrice', values[0].toString());
-      params.set('maxPrice', values[1].toString());
-    } else {
-      if (values.length) {
-        params.set(key, values.toString());
-      } else {
-        params.delete(key);
-      }
-    }
-    router.push(`${pathName}?${params.toString()}`);
+  const changeData = (value: IFilters) => {
+    setData(value);
+    onChange(value);
   };
 
-  const debounceChangeFilter = debounce((key: string, values: number[] | string[]) => {
-    changeFilter(key, values);
-  }, 800);
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData, reset]);
 
   return (
     <Flex direction="column" gap="6">
-      <CheckboxGroupFilter title="Category" items={Object.values(EProductCategory)} defaultValue={categories} onChange={(values) => debounceChangeFilter('categories', values)} />
-      <RangeFilter title="Price" min={MIN_PRICE} max={MAX_PRICE} defaultValue={[minPrice, maxPrice]} onChange={(values) => debounceChangeFilter('price', values)} />
-      <CheckboxGroupFilter title="Size" items={Object.values(EProductSize)} defaultValue={sizes} onChange={(values) => debounceChangeFilter('sizes', values)} />
-      <CheckboxGroupFilter title="Tone" items={Object.values(EProductTone)} defaultValue={tones} onChange={(values) => debounceChangeFilter('tones', values)} />
+      <CheckboxGroupFilter
+        title="Category"
+        items={Object.values(EProductCategory)}
+        value={categories}
+        onChange={(values) => changeData({ ...data, categories: values })} />
+      <RangeFilter
+        title="Price"
+        min={priceRange.min} max={priceRange.max}
+        value={[minPrice, maxPrice]}
+        onChange={([minPrice, maxPrice]) => changeData({ ...data, minPrice, maxPrice })} />
+      <CheckboxGroupFilter
+        title="Size"
+        items={Object.values(EProductSize)}
+        value={sizes}
+        onChange={(values) => changeData({ ...data, sizes: values })} />
+      <CheckboxGroupFilter
+        title="Tone"
+        items={Object.values(EProductTone)}
+        value={tones}
+        onChange={(values) => changeData({ ...data, tones: values })} />
     </Flex>
   );
 }
 
-function CheckboxGroupFilter({ title, items, defaultValue, onChange }: { title: string, items: string[]; defaultValue: string[]; onChange: (values: string[]) => void; }) {
+function CheckboxGroupFilter<T extends string>({ title, items, value, onChange }: { title: string, items: T[]; value: T[]; onChange: (values: T[]) => void; }) {
   return (
     <Flex direction="column" gap="3">
       <Text weight="medium">{title}</Text>
-      <CheckboxGroup.Root defaultValue={defaultValue} onValueChange={(values) => onChange(values)}>
+      <CheckboxGroup.Root value={value} onValueChange={(values) => onChange(values as T[])}>
         {items.map((item, index) => (
           <CheckboxGroup.Item key={index} value={item}>{item}</CheckboxGroup.Item>
         ))}
@@ -67,28 +57,15 @@ function CheckboxGroupFilter({ title, items, defaultValue, onChange }: { title: 
   );
 }
 
-function RangeFilter({ title, min, max, defaultValue, onChange }: { title: string, min: number; max: number; defaultValue: number[], onChange: (values: number[]) => void; }) {
-  const [minValue, setMinValue] = useState(min);
-  const [maxValue, setMaxValue] = useState(max);
+function RangeFilter({ title, min, max, value, onChange }: { title: string, min: number; max: number; value: number[], onChange: (values: number[]) => void; }) {
   return (
     <Flex direction="column" gap="3">
       <Text weight="medium">{title}</Text>
       <Flex minWidth="200px" direction="column" gap="2">
-        <Slider
-          defaultValue={defaultValue}
-          min={min}
-          max={max}
-          step={2}
-          minStepsBetweenThumbs={2}
-          onValueChange={(value) => {
-            setMinValue(value[0]);
-            setMaxValue(value[1]);
-            onChange(value);
-          }}
-        />
+        <Slider value={value} min={min} max={max} step={2} minStepsBetweenThumbs={2} onValueChange={(value) => onChange(value)} />
         <Flex justify="between">
-          <Text>{formatPrice(minValue)}</Text>
-          <Text>{formatPrice(maxValue)}</Text>
+          <Text>{formatPrice(value[0])}</Text>
+          <Text>{formatPrice(value[1])}</Text>
         </Flex>
       </Flex>
     </Flex>

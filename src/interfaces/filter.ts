@@ -1,11 +1,9 @@
 import { EProductCategory, EProductSize, EProductTone } from "./product";
 
-export interface IFilter {
+export interface IFilters {
     categories: EProductCategory[],
-    prices: {
-        min: number,
-        max: number;
-    },
+    minPrice: number,
+    maxPrice: number,
     sizes: EProductSize[],
     tones: EProductTone[],
 }

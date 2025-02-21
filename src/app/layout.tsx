@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/providers/queryProvider";
 import { Flex, Theme } from "@radix-ui/themes";
-import { Header, Footer } from "@/components";
+
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 
@@ -18,11 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
           <QueryProvider>
             <Flex justify="center">
               <Flex direction="column" align="center" width="100%" maxWidth="1200px" minHeight="100vh" px="5">
-                <Header />
-                <Flex flexGrow="1" width="100%" justify="center" align="center">
-                  {children}
-                </Flex>
-                <Footer />
+                {children}
               </Flex>
             </Flex>
           </QueryProvider>
