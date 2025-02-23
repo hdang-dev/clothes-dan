@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
 import { AvatarIcon, HeartIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Box, Text, Flex, IconButton, TextField } from "@radix-ui/themes";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function Header({ initialSearchText, onClickLogo, onSearch, reset }: { initialSearchText: string, onClickLogo?: () => void; onSearch: (text: string) => void; reset?: number; }) {
-  const [searchText, setSearchText] = useState(initialSearchText);
+export function Header({ onClickLogo, onSearch, reset }: { onClickLogo?: () => void; onSearch: (text: string) => void; reset?: number }) {
+  const searchParams = useSearchParams();
+  const [searchText, setSearchText] = useState(searchParams.get("search") || "");
 
   const changeValue = (value: string) => {
     setSearchText(value);
@@ -14,7 +16,7 @@ export function Header({ initialSearchText, onClickLogo, onSearch, reset }: { in
   };
 
   useEffect(() => {
-    setSearchText('');
+    setSearchText("");
   }, [reset]);
 
   return (

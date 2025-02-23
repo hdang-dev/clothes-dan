@@ -33,5 +33,5 @@ export function ProductCard({ product }: { product: IProduct; }) {
         </Flex>
       </Card>
     </Link>
-  );
+    );
 }
