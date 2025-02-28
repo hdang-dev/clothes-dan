@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function Header({ onClickLogo, onSearch, reset }: { onClickLogo?: () => void; onSearch: (text: string) => void; reset?: number }) {
+export function Header({ onClickLogo, onSearch, reset }: { onClickLogo?: () => void; onSearch: (text: string) => void; reset?: number; }) {
   const searchParams = useSearchParams();
   const [searchText, setSearchText] = useState(searchParams.get("search") || "");
 
@@ -39,9 +39,11 @@ export function Header({ onClickLogo, onSearch, reset }: { onClickLogo?: () => v
 
       {/* Icons */}
       <Flex gap="3">
-        <IconButton variant="ghost">
-          <HeartIcon width="22" height="22" />
-        </IconButton>
+        <Link href="/wishlist">
+          <IconButton variant="ghost">
+            <HeartIcon width="22" height="22" />
+          </IconButton>
+        </Link>
         <IconButton variant="ghost">
           <AvatarIcon width="22" height="22" />
         </IconButton>
