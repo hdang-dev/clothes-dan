@@ -3,18 +3,23 @@
 import { Flex, CheckboxGroup, Slider, Text } from "@radix-ui/themes";
 import { EProductCategory, EProductSize, EProductTone, IFilters } from "@/interfaces";
 import { formatPrice } from "@/utils";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { debounce } from "lodash";
 
-export function Filters({ priceRange, onChange, reset }: { priceRange: { min: number; max: number }; onChange: (value: IFilters) => void; reset: number }) {
+const MIN_PRICE = 0;
+const MAX_PRICE = 150;
+
+// export function Filters({ priceRange, onChange, reset }: { priceRange: { min: number; max: number }; onChange: (value: IFilters) => void; reset: number }) {
+export function Filters() {
   const searchParams = useSearchParams();
   const [data, setData] = useState<IFilters>({
     categories: (searchParams
       .get("categories")
       ?.split(",")
       .filter((item) => item !== "") || []) as EProductCategory[],
-    minPrice: Number(searchParams.get("minPrice")) || priceRange.min,
-    maxPrice: Number(searchParams.get("maxPrice")) || priceRange.max,
+    minPrice: Number(searchParams.get("minPrice")) || MIN_PRICE,
+    maxPrice: Number(searchParams.get("maxPrice")) || MAX_PRICE,
     sizes: (searchParams
       .get("sizes")
       ?.split(",")
@@ -25,26 +30,40 @@ export function Filters({ priceRange, onChange, reset }: { priceRange: { min: nu
       .filter((item) => item !== "") || []) as EProductTone[],
   });
   const { categories, minPrice, maxPrice, sizes, tones } = data;
+  const router = useRouter();
+  const pathName = usePathname();
 
   const changeData = (value: IFilters) => {
     setData(value);
-    onChange(value);
+    debounceChangeFilters(value);
   };
 
+  const debounceChangeFilters = useMemo(
+    () =>
+      debounce((filters: IFilters) => {
+        const params = new URLSearchParams(searchParams);
+        Object.entries(filters).map(([key, value]) => {
+          if (value.toString() === "") {
+            params.delete(key);
+          } else {
+            params.set(key, value);
+          }
+        });
+        router.push(`${pathName}?${params.toString()}`);
+      }, 500),
+    [searchParams]
+  );
+
   useEffect(() => {
-    setData({
-      categories: [],
-      minPrice: priceRange.min,
-      maxPrice: priceRange.max,
-      sizes: [],
-      tones: [],
-    });
-  }, [priceRange.max, priceRange.min, reset]);
+    return () => {
+      debounceChangeFilters.cancel();
+    };
+  }, [debounceChangeFilters]);
 
   return (
     <Flex direction="column" gap="6">
       <CheckboxGroupFilter title="Category" items={Object.values(EProductCategory)} value={categories} onChange={(values) => changeData({ ...data, categories: values })} />
-      <RangeFilter title="Price" min={priceRange.min} max={priceRange.max} value={[minPrice, maxPrice]} onChange={([minPrice, maxPrice]) => changeData({ ...data, minPrice, maxPrice })} />
+      <RangeFilter title="Price" min={MIN_PRICE} max={MAX_PRICE} value={[minPrice, maxPrice]} onChange={([minPrice, maxPrice]) => changeData({ ...data, minPrice, maxPrice })} />
       <CheckboxGroupFilter title="Size" items={Object.values(EProductSize)} value={sizes} onChange={(values) => changeData({ ...data, sizes: values })} />
       <CheckboxGroupFilter title="Tone" items={Object.values(EProductTone)} value={tones} onChange={(values) => changeData({ ...data, tones: values })} />
     </Flex>

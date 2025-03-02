@@ -4,13 +4,14 @@ import { Flex, Theme } from "@radix-ui/themes";
 
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
+import { Header, Footer } from "@/components";
 
 export const metadata: Metadata = {
   title: "Clothes Dan",
   description: "Clothes Shop, design and code by Dan",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode; }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
@@ -18,7 +19,11 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
           <QueryProvider>
             <Flex justify="center">
               <Flex direction="column" align="center" width="100%" maxWidth="1200px" minHeight="100vh" px="5">
-                {children}
+                <Header />
+                <Flex flexGrow="1" width="100%" justify="center" align="center">
+                  {children}
+                </Flex>
+                <Footer />
               </Flex>
             </Flex>
           </QueryProvider>
@@ -27,10 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
     </html>
   );
 }
-
-
-
-
 
 // import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
@@ -66,4 +67,3 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
 //     </html>
 //   );
 // }
-

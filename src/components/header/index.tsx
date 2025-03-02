@@ -2,27 +2,46 @@
 
 import { AvatarIcon, HeartIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Box, Text, Flex, IconButton, TextField } from "@radix-ui/themes";
+import { debounce } from "lodash";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
-export function Header({ onClickLogo, onSearch, reset }: { onClickLogo?: () => void; onSearch: (text: string) => void; reset?: number; }) {
+export function Header() {
   const searchParams = useSearchParams();
   const [searchText, setSearchText] = useState(searchParams.get("search") || "");
+  const router = useRouter();
+  const pathName = usePathname();
 
   const changeValue = (value: string) => {
     setSearchText(value);
-    onSearch(value);
+    debounceChangeSearchText(value);
   };
 
+  const debounceChangeSearchText = useMemo(
+    () =>
+      debounce((text: string) => {
+        const params = new URLSearchParams(searchParams);
+        if (text === "") {
+          params.delete("search");
+        } else {
+          params.set("search", text);
+        }
+        router.push(`${pathName}?${params.toString()}`);
+      }, 500),
+    [searchParams]
+  );
+
   useEffect(() => {
-    setSearchText("");
-  }, [reset]);
+    return () => {
+      debounceChangeSearchText.cancel();
+    };
+  }, [debounceChangeSearchText]);
 
   return (
     <Flex width="100%" justify="between" py="6">
       {/* Logo */}
-      <Link href="/" onClick={() => onClickLogo?.()}>
+      <Link href="/" onClick={() => {}}>
         <Text size="7" style={{ fontFamily: "Sansita Swashed, cursive" }}>
           Clothes Dan
         </Text>
