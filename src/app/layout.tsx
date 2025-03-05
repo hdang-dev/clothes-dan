@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Clothes Shop, design and code by Dan",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode; }) {
   return (
     <html lang="en">
       <body>
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Flex justify="center">
               <Flex direction="column" align="center" width="100%" maxWidth="1200px" minHeight="100vh" px="5">
                 <Header />
-                <Flex flexGrow="1" width="100%" justify="center" align="center">
+                <Flex flexGrow="1" width="100%" justify="center">
                   {children}
                 </Flex>
                 <Footer />
