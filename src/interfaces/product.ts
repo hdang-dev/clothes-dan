@@ -21,11 +21,19 @@ export enum EProductTone {
 }
 
 export interface IProduct {
-  sku: string;
+  id: string;
+  group: string;
   name: string;
   imageSrc: string;
   category: EProductCategory;
   price: number;
-  sizes: EProductSize[];
+  size: EProductSize;
   tone: EProductTone;
 }
+
+export interface IProductGroup {
+  key: string;
+  count: number;
+  lowestPrice: number;
+  items: IProduct[];
+};

@@ -1,31 +1,27 @@
 "use client";
 
 import { Flex, Grid, Select, Text } from "@radix-ui/themes";
-import { ProductCard } from "../productCard";
-import { ESortType, IProduct } from "@/interfaces";
+import { ProductGroupCard } from "../productGroupCard";
+import { ESortType, IProductGroup } from "@/interfaces";
 import { useState } from "react";
 
-const sortedProducts = (products: IProduct[], sortType: ESortType): IProduct[] => {
+const sortedProductGroups = (productGroups: IProductGroup[], sortType: ESortType): IProductGroup[] => {
   if (sortType === ESortType.LOW_TO_HIGH) {
-    return products.sort((prev, next) => (prev.price > next.price ? 1 : -1));
+    return productGroups.sort((prev, next) => (prev.lowestPrice > next.lowestPrice ? 1 : -1));
   }
-  return products.sort((prev, next) => (prev.price > next.price ? -1 : 1));
+  return productGroups.sort((prev, next) => (prev.lowestPrice > next.lowestPrice ? -1 : 1));
 };
 
-export function ProductList({ products }: { products: IProduct[] }) {
+export function ProductGroupList({ data }: { data: IProductGroup[]; }) {
   const [sortType, setSortType] = useState<ESortType>(ESortType.LOW_TO_HIGH);
-
-  const changeSortType = (sortType: ESortType) => {
-    setSortType(sortType);
-  };
 
   return (
     <>
-      {products.length > 0 ? (
+      {data.length > 0 ? (
         <>
           <Flex width="100%" justify="between">
-            <Text>Found {products.length} product(s)</Text>
-            <Select.Root size="2" value={sortType} onValueChange={(value) => changeSortType(value as ESortType)}>
+            <Text>Found {data.length} product(s)</Text>
+            <Select.Root size="2" value={sortType} onValueChange={(value) => setSortType(value as ESortType)}>
               <Select.Trigger />
               <Select.Content>
                 {Object.values(ESortType).map((sortType) => (
@@ -37,8 +33,8 @@ export function ProductList({ products }: { products: IProduct[] }) {
             </Select.Root>
           </Flex>
           <Grid width="100%" height="max-content" columns={{ initial: "1", sm: "2", md: "3" }} gap="6">
-            {sortedProducts(products, sortType).map((product) => (
-              <ProductCard key={product.sku} product={product} />
+            {sortedProductGroups(data, sortType).map((productGroup) => (
+              <ProductGroupCard key={productGroup.key} data={productGroup} />
             ))}
           </Grid>
         </>

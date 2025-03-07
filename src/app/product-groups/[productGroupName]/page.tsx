@@ -1,38 +1,38 @@
 "use client";
 
 import { AspectRatio, Box, Flex, Text, Button, SegmentedControl, Spinner } from "@radix-ui/themes";
-import { EProductSize, IProduct } from "@/interfaces";
+import { IProduct, IProductGroup } from "@/interfaces";
 import { formatPrice } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { SimilarProductList } from "@/components";
+import { SimilarProductGroupList } from "@/components";
 
-export default function ProductPage({ params }: { params: { productId: string; }; }) {
-  const productId = params.productId;
-  const [selectedSize, setSelectedSize] = useState<EProductSize>();
-  const { data: product } = useQuery<IProduct>({
-    queryKey: ["product", productId],
-    queryFn: () => fetch(`/api/products/${productId}`).then((data) => data.json()),
+export default function ProductPage({ params }: { params: { productGroupName: string; }; }) {
+  const { productGroupName } = params;
+  const [product, setProduct] = useState<IProduct>();
+  const { data: productGroup } = useQuery<IProductGroup>({
+    queryKey: ["product-groups", productGroupName],
+    queryFn: () => fetch(`/api/product-groups/${productGroupName}`).then((data) => data.json()),
   });
-  const { data: similarProducts } = useQuery<IProduct[]>({
-    queryKey: ["similar-products", productId],
-    queryFn: () => fetch(`/api/similar-products/${productId}`).then((data) => data.json()),
+  const { data: similarProductGroups } = useQuery<IProductGroup[]>({
+    queryKey: ["similar-product-groups", productGroupName],
+    queryFn: () => fetch(`/api/similar-product-groups/${productGroupName}`).then((data) => data.json()),
   });
 
-  const addToWishlist = () => { };
+  // const addToWishlist = () => { };
 
-  const buyNow = () => { };
+  // const buyNow = () => { };
 
   useEffect(() => {
-    if (product) {
-      setSelectedSize(product.sizes[0]);
+    if (productGroup) {
+      setProduct(productGroup.items[0]);
     }
-  }, [product]);
+  }, [productGroup]);
 
   return (
-    <Flex direction="column" py="5">
-      {product ? (
+    <Flex direction="column" width="100%" py="7">
+      {/* {(product && productGroup) ? (
         <Flex gap="9">
           <Box minWidth="500px">
             <AspectRatio ratio={1 / 1}>
@@ -44,12 +44,12 @@ export default function ProductPage({ params }: { params: { productId: string; }
               <Text size="7" weight="bold" style={{ fontFamily: "Sansita Swashed, cursive" }}>
                 {product.name}
               </Text>
-              <Text>{product.sku}</Text>
+              <Text>{product.id}</Text>
               <Box>
-                <SegmentedControl.Root value={selectedSize} size="3" onValueChange={(value) => setSelectedSize(value as EProductSize)}>
-                  {product.sizes.map((size) => (
-                    <SegmentedControl.Item key={size} value={size}>
-                      {size}
+                <SegmentedControl.Root value={product.size} size="3" >
+                  {productGroup.items.map((product) => (
+                    <SegmentedControl.Item key={product.id} value={product.size} onClick={() => setProduct(product)}>
+                      {product.size}
                     </SegmentedControl.Item>
                   ))}
                 </SegmentedControl.Root>
@@ -74,14 +74,16 @@ export default function ProductPage({ params }: { params: { productId: string; }
         <Flex width="100%" height="100%" align="center" justify="center">
           <Spinner size="3" />
         </Flex>
-      )}
-      {similarProducts ? (
-        <SimilarProductList products={similarProducts} />
-      ) : (
-        <Flex width="100%" height="100%" align="center" justify="center">
-          <Spinner size="3" />
-        </Flex>
-      )}
+      )} */}
+
+      {/* {similarProductGroups ? (
+        <></>
+        // <SimilarProductGroupList data={similarProductGroups} />
+      ) : ( 
+        )}*/}
+      <Flex width="100%" height="100%" align="center" justify="center">
+        <Spinner size="3" />
+      </Flex>
     </Flex>
   );
 }
