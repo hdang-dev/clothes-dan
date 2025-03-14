@@ -7,9 +7,12 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { SimilarProductGroupList } from "@/components";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { addWishListItem, removeWishListItem } from "@/lib/reducers/wishListSlice";
+import { useParams, useRouter } from "next/navigation";
 
-export default function ProductPage({ params }: { params: { productGroupName: string; }; }) {
-  const { productGroupName } = params;
+export default function ProductPage() {
+  const { productGroupName } = useParams<{ productGroupName: string; }>();
   const [product, setProduct] = useState<IProduct>();
   const { data: productGroup } = useQuery<IProductGroup>({
     queryKey: ["product-groups", productGroupName],
@@ -19,10 +22,18 @@ export default function ProductPage({ params }: { params: { productGroupName: st
     queryKey: ["similar-product-groups", productGroupName],
     queryFn: () => fetch(`/api/similar-product-groups/${productGroupName}`).then((data) => data.json()),
   });
-
-  // const addToWishlist = () => { };
-
-  // const buyNow = () => { };
+  const isWishListItem = useAppSelector(state => state.wishList).filter(item => item.product.id === product?.id).length > 0;
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const addWishList = (product: IProduct) => {
+    dispatch(addWishListItem(product));
+  };
+  const removeWishList = (product: IProduct) => {
+    dispatch(removeWishListItem(product));
+  };
+  const buyNow = () => {
+    router.push('/wishlist');
+  };
 
   useEffect(() => {
     if (productGroup) {
@@ -32,7 +43,7 @@ export default function ProductPage({ params }: { params: { productGroupName: st
 
   return (
     <Flex direction="column" width="100%" py="7">
-      {/* {(product && productGroup) ? (
+      {(product && productGroup) ? (
         <Flex gap="9">
           <Box minWidth="500px">
             <AspectRatio ratio={1 / 1}>
@@ -64,26 +75,37 @@ export default function ProductPage({ params }: { params: { productGroupName: st
                 {formatPrice(product.price)}
               </Text>
               <Flex gap="4">
-                <Button size="3">Add to Wishlist</Button>
-                <Button size="3">Buy Now</Button>
+                {isWishListItem ? (
+                  <>
+                    <Button size="3" onClick={() => removeWishList(product)}>Remove from wishlist</Button>
+                    <Button size="3" onClick={() => buyNow()}>Buy now</Button>
+                  </>
+                ) : (
+                  <Button size="3" variant="outline" onClick={() => addWishList(product)}>Add to wishlist</Button>
+                )}
               </Flex>
             </Flex>
           </Box>
-        </Flex>
+        </Flex >
       ) : (
         <Flex width="100%" height="100%" align="center" justify="center">
           <Spinner size="3" />
         </Flex>
-      )} */}
+      )
+      }
 
-      {/* {similarProductGroups ? (
-        <></>
-        // <SimilarProductGroupList data={similarProductGroups} />
-      ) : ( 
-        )}*/}
+      {
+        similarProductGroups ? (
+          <SimilarProductGroupList data={similarProductGroups} />
+        ) : (
+          <Flex width="100%" height="100%" align="center" justify="center">
+            <Spinner size="3" />
+          </Flex>
+        )
+      }
       <Flex width="100%" height="100%" align="center" justify="center">
         <Spinner size="3" />
       </Flex>
-    </Flex>
+    </Flex >
   );
 }

@@ -1,7 +1,6 @@
-import { EProductSize, IProduct } from "./product";
+import { IProduct } from "./product";
 
-export type TWishList = Array<{
+export interface IWishListItem {
     product: IProduct,
-    selectedSize: EProductSize,
     count: number;
-}>;
+};
